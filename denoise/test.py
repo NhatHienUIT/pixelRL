@@ -14,7 +14,7 @@ from pixelwise_a3c import *
 TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"
 TESTING_DATA_PATH           = "/content/pixelRL/testing.txt"
 IMAGE_DIR_PATH              = "/content/pixelRL/"
-SAVE_PATH            = "/content/model/denoise_myfcn_"
+SAVE_PATH            = "/content/pixelRL/denoise/model/denoise_myfcn_"
  
 #_/_/_/ training parameters _/_/_/ 
 LEARNING_RATE    = 0.001
@@ -67,8 +67,8 @@ def test(loader, agent, fout):
         p = np.transpose(p,(1,2,0))
         I = np.transpose(I,(1,2,0))
         N = np.transpose(N,(1,2,0))
-        cv2.imwrite('./resultimage/'+str(i)+'_output.png',p)
-        cv2.imwrite('./resultimage/'+str(i)+'_input.png',N)
+        cv2.imwrite('/content/pixelRL/denoise/resultimage/'+str(i)+'_output.png',p)
+        cv2.imwrite('/content/pixelRL/denoise/resultimage/'+str(i)+'_input.png',N)
 
         sum_psnr += cv2.PSNR(p, I)
  
@@ -97,7 +97,7 @@ def main(fout):
     optimizer.setup(model)
 
     agent = PixelWiseA3C(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('./model/pretrained_15.npz', agent.model)
+    chainer.serializers.load_npz('/content/pixelRL/denoise/model/pretrained_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
 

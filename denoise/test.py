@@ -11,9 +11,9 @@ import os
 from pixelwise_a3c import *
 
 #_/_/_/ paths _/_/_/ 
-TRAINING_DATA_PATH          = "../training_BSD68.txt"
-TESTING_DATA_PATH           = "../testing.txt"
-IMAGE_DIR_PATH              = "../"
+TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"
+TESTING_DATA_PATH           = "/content/pixelRL/testing.txt"
+IMAGE_DIR_PATH              = "/content/pixelRL/"
 SAVE_PATH            = "./model/denoise_myfcn_"
  
 #_/_/_/ training parameters _/_/_/ 

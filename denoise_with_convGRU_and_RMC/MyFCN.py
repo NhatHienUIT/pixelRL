@@ -55,7 +55,7 @@ class MyFcn(chainer.Chain, a3c.A3CModel):
         wI = np.zeros((1,1,33,33))
         wI[:,:,16,16] = 1
         net = MyFcn_trained(n_actions)
-        chainer.serializers.load_npz('../denoise_with_convGRU/model/pretrained_15.npz', net)
+        chainer.serializers.load_npz('/content/pixelRl/denoise_with_convGRU/model/pretrained_15.npz', net)
         super(MyFcn, self).__init__(
             conv1=L.Convolution2D( 1, 64, 3, stride=1, pad=1, nobias=False, initialW=net.conv1.W.data, initial_bias=net.conv1.b.data),
             diconv2=DilatedConvBlock(2, net.diconv2.diconv.W.data, net.diconv2.diconv.b.data),

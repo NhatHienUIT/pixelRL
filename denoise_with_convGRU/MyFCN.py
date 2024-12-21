@@ -29,7 +29,7 @@ class MyFcn(chainer.Chain, a3c.A3CModel):
  
     def __init__(self, n_actions):
         w = chainer.initializers.HeNormal()
-        net = CaffeFunction('../initial_weight/zhang_cvpr17_denoise_15_gray.caffemodel')
+        net = CaffeFunction('/content/pixelRl/initial_weight/zhang_cvpr17_denoise_15_gray.caffemodel')
         super(MyFcn, self).__init__(
             conv1=L.Convolution2D( 1, 64, 3, stride=1, pad=1, nobias=False, initialW=net.layer1.W.data, initial_bias=net.layer1.b.data),
             diconv2=DilatedConvBlock(2, net.layer3.W.data, net.layer3.b.data),

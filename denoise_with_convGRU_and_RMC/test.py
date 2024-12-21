@@ -11,10 +11,10 @@ import os
 from pixelwise_a3c import *
 
 #_/_/_/ paths _/_/_/ 
-TRAINING_DATA_PATH          = "../training_BSD68.txt"
-TESTING_DATA_PATH           = "../testing.txt"
-IMAGE_DIR_PATH              = "../"
-SAVE_PATH            = "./model/denoise_myfcn_"
+TRAINING_DATA_PATH          = "/content/pixelRl/training_BSD68.txt"
+TESTING_DATA_PATH           = "/content/pixelRl/testing.txt"
+IMAGE_DIR_PATH              = "/content/pixelRl/"
+SAVE_PATH            = "/content/pixelRl/denoise_with_convGRU/model/denoise_myfcn_"
  
 #_/_/_/ training parameters _/_/_/ 
 LEARNING_RATE    = 0.001
@@ -66,8 +66,8 @@ def test(loader, agent, fout):
         p = np.transpose(p,(1,2,0))
         I = np.transpose(I,(1,2,0))
         N = np.transpose(N,(1,2,0))
-        cv2.imwrite('./resultimage/'+str(i)+'_output.png',p)
-        cv2.imwrite('./resultimage/'+str(i)+'_input.png',N)
+        cv2.imwrite('/content/pixelRl/denoise_with_convGRU/resultimage/'+str(i)+'_output.png',p)
+        cv2.imwrite('/content/pixelRl/denoise_with_convGRU/resultimage/'+str(i)+'_input.png',N)
 
         sum_psnr += cv2.PSNR(p, I)
  
@@ -96,7 +96,7 @@ def main(fout):
     optimizer.setup(model)
 
     agent = PixelWiseA3C_InnerState_ConvR(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('./model/pretrained_15.npz', agent.model)
+    chainer.serializers.load_npz('/content/pixelRl/denoise_with_convGRU/model/pretrained_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
 

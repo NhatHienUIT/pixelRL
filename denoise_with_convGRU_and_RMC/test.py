@@ -50,7 +50,9 @@ def test(loader, agent, fout):
             previous_image = current_state.image.copy()
             action, inner_state = agent.act(current_state.tensor)
             print(action)
-            print(inner_state)
+            print(len(action))
+            print(action.shape())
+   
             current_state.step(action, inner_state)
             reward = np.square(raw_x - previous_image)*255 - np.square(raw_x - current_state.image)*255
             sum_reward += np.mean(reward)*np.power(GAMMA,t)

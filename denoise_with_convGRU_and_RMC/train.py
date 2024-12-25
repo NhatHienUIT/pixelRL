@@ -36,6 +36,18 @@ CROP_SIZE = 70
 
 GPU_ID = 0
 
+def plot_rewards(rewards_history):
+    plt.figure(figsize=(10, 6))
+    plt.plot(rewards_history, color='blue', linewidth=1, alpha=0.8)
+    plt.xlabel('episode')
+    plt.ylabel('reward')
+    plt.ylim(0, 200)
+    plt.xlim(0, 30000)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.savefig('rewards_plot.png', dpi=300)
+    plt.close()
+ 
 def test(loader, agent, fout):
     sum_psnr     = 0
     sum_reward = 0

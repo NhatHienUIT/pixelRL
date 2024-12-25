@@ -48,6 +48,8 @@ def test(loader, agent, fout):
         for t in range(0, EPISODE_LEN):
             previous_image = current_state.image.copy()
             action, inner_state = agent.act(current_state.tensor)
+            print(action)
+            print(inner_state)
             current_state.step(action, inner_state)
             reward = np.square(raw_x - previous_image)*255 - np.square(raw_x - current_state.image)*255
             sum_reward += np.mean(reward)*np.power(GAMMA,t)
@@ -68,7 +70,8 @@ def test(loader, agent, fout):
         N = np.transpose(N,(1,2,0))
         cv2.imwrite('/content/pixelRL/denoise_with_convGRU_and_RMC/resultimage/'+str(i)+'_output.png',p)
         cv2.imwrite('/content/pixelRL/denoise_with_convGRU_and_RMC/resultimage/'+str(i)+'_input.png',N)
-
+        cv2_imshow(N)
+        cv2_imshow(p)
         sum_psnr += cv2.PSNR(p, I)
  
     print("test total reward {a}, PSNR {b}".format(a=sum_reward*255/test_data_size, b=sum_psnr/test_data_size))

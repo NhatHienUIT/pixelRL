@@ -9,6 +9,8 @@ import chainerrl
 import State
 import os
 from pixelwise_a3c import *
+import matplotlib.pyplot as plt
+import numpy as np
 
 #_/_/_/ paths _/_/_/ 
 TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"

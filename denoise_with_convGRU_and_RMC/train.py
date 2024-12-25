@@ -96,6 +96,7 @@ def main(fout):
     train_data_size = MiniBatchLoader.count_paths(TRAINING_DATA_PATH)
     indices = np.random.permutation(train_data_size)
     i = 0
+    rewards_history = []
     for episode in range(1, N_EPISODES+1):
         # display current state
         print("episode %d" % episode)
@@ -117,7 +118,10 @@ def main(fout):
             current_state.step(action, inner_state)
             reward = np.square(raw_x - previous_image)*255 - np.square(raw_x - current_state.image)*255
             sum_reward += np.mean(reward)*np.power(GAMMA,t)
-
+        rewards_history.append(sum_reward * 255)
+    
+        if episode % 100 == 0:
+            plot_rewards(rewards_history)
         agent.stop_episode_and_train(current_state.tensor, reward, True)
         print("train total reward {a}".format(a=sum_reward*255))
         fout.write("train total reward {a}\n".format(a=sum_reward*255))

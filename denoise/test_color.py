@@ -12,7 +12,7 @@ from pixelwise_a3c import *
 
 #_/_/_/ paths _/_/_/ 
 TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"
-TESTING_DATA_PATH           = "/content/pixelRL/testing.txt"
+TESTING_DATA_PATH           = "/content/pixelRL/demo.txt"
 IMAGE_DIR_PATH              = "/content/pixelRL/"
 SAVE_PATH            = "/content/pixelRL/denoise/model/denoise_myfcn_"
  
@@ -43,7 +43,7 @@ def test_color(loader, agent, fout):
     test_data_size = MiniBatchLoader.count_paths(TESTING_DATA_PATH)
 
     # Create output directory if not exists
-    output_dir = '/content/pixelRL/denoise/resultimage/'
+    output_dir = '/content/pixelRL/resultimage/'
     os.makedirs(output_dir, exist_ok=True)
 
     # Iterate through test data in batches

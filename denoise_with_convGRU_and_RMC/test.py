@@ -70,8 +70,6 @@ def test(loader, agent, fout):
         N = np.transpose(N,(1,2,0))
         cv2.imwrite('/content/pixelRL/resultimage/denoise_with_convGRU_and_RMC/grey/'+str(i)+'_output.png',p)
         cv2.imwrite('/content/pixelRL/resultimage/denoise_with_convGRU_and_RMC/grey/'+str(i)+'_input.png',N)
-        cv2_imshow(N)
-        cv2_imshow(p)
         sum_psnr += cv2.PSNR(p, I)
         print(cv2.PSNR(p, I))
  

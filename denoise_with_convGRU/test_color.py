@@ -45,7 +45,7 @@ def test_color(loader, agent, fout):
     test_data_size = MiniBatchLoader.count_paths(TESTING_DATA_PATH)
     
     # Create output directory if not exists
-    output_dir = '/content/pixelRL/resultimage/denoiser_with_convGRU/'
+    output_dir = '/content/pixelRL/resultimage/denoiser_with_convGRU/color/'
     os.makedirs(output_dir, exist_ok=True)
     
     # Process images in batches

@@ -53,7 +53,6 @@ def test_color(loader, agent, fout):
 
         # Handle color images (split into channels)
         _, c, h, w = raw_x.shape
-        raw_n = np.random.normal(MEAN, SIGMA, raw_x.shape).astype(raw_x.dtype) / 255
 
         # Initialize storage for denoised channels
         denoised_channels = []
@@ -61,21 +60,23 @@ def test_color(loader, agent, fout):
         for channel_idx in range(c):
             # Process each channel independently
             raw_channel = raw_x[:, channel_idx:channel_idx+1, :, :]
-            noisy_channel = raw_channel + raw_n[:, channel_idx:channel_idx+1, :, :]
-
+            raw_n = np.random.normal(MEAN, SIGMA, raw_channel.shape).astype(raw_channel.dtype) / 255
+            noisy_channel = raw_channel + raw_n
             # Initialize state for the channel
             current_state = State.State((TEST_BATCH_SIZE, 1, h, w), MOVE_RANGE)
             current_state.reset(raw_channel, noisy_channel)
+            current_states.append(current_state)
+            raw_channels.append(raw_channel)
+            noisy_channels.append(noisy_channel[0, 0, :, :])
 
             # Iterative denoising process
             for t in range(EPISODE_LEN):
-                # Get action from the agent and update the state
-                action = agent.act(current_state.image)
-                current_state.step(action)
-
-            # Store denoised channel
-            denoised_channel = np.clip(current_state.image, 0, 1)
-            denoised_channels.append(denoised_channel[:, 0, :, :])  # Remove the channel dimension
+                for i in range(c):
+                   action, inner_state = agent.act(current_states[i].tensor)
+                   current_states[i].step(action, inner_state)
+                   denoised_channel = np.maximum(0, current_states[i].image)
+                   denoised_channel = np.minimum(1, denoised_channel)
+                   denoised_channels.append(denoised_channel[0, 0, :, :]) # Remove the channel dimension
 
         # Recombine channels into a single image
         denoised_image = np.stack(denoised_channels, axis=1)  # Shape: (batch_size, channels, height, width)

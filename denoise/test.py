@@ -12,7 +12,7 @@ from pixelwise_a3c import *
 
 #_/_/_/ paths _/_/_/ 
 TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"
-TESTING_DATA_PATH           = "/content/pixelRL/testing.txt"
+TESTING_DATA_PATH           = "/content/pixelRL/demo.txt"
 IMAGE_DIR_PATH              = "/content/pixelRL/"
 SAVE_PATH            = "/content/pixelRL/denoise/model/denoise_myfcn_"
  
@@ -67,8 +67,8 @@ def test(loader, agent, fout):
         p = np.transpose(p,(1,2,0))
         I = np.transpose(I,(1,2,0))
         N = np.transpose(N,(1,2,0))
-        cv2.imwrite('/content/pixelRL/denoise/resultimage/'+str(i)+'_output.png',p)
-        cv2.imwrite('/content/pixelRL/denoise/resultimage/'+str(i)+'_input.png',N)
+        cv2.imwrite('/content/pixelRL/resultimage/'+str(i)+'_output.png',p)
+        cv2.imwrite('/content/pixelRL/resultimage/'+str(i)+'_input.png',N)
 
         sum_psnr += cv2.PSNR(p, I)
  

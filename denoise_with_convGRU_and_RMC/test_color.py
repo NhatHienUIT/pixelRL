@@ -120,6 +120,7 @@ def test_color(loader, agent, fout):
                     original_image = raw_x[b].transpose(1, 2, 0)
                     original_image_uint8 = (np.clip(original_image, 0, 1) * 255 + 0.5).astype(np.uint8)
                     sum_psnr += cv2.PSNR(denoised_image_uint8, original_image_uint8)
+                    print(cv2.PSNR(denoised_image_uint8, original_image_uint8))
         
         # Clean up episodes
         for b in range(batch_size):

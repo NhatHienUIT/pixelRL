@@ -35,6 +35,8 @@ CROP_SIZE = 70
 GPU_ID = 0
 
 def test_color(loader, agent, fout):
+    import os  # Import required for creating directories
+    
     # Initialize metrics
     sum_psnr = 0
     sum_reward = 0
@@ -43,7 +45,7 @@ def test_color(loader, agent, fout):
     test_data_size = MiniBatchLoader.count_paths(TESTING_DATA_PATH)
 
     # Create output directory if not exists
-    output_dir = '/content/pixelRL/resultimage/'
+    output_dir = '/content/pixelRL/denoise/resultimage/'
     os.makedirs(output_dir, exist_ok=True)
 
     # Iterate through test data in batches
@@ -53,6 +55,7 @@ def test_color(loader, agent, fout):
 
         # Handle color images (split into channels)
         _, c, h, w = raw_x.shape
+        raw_n = np.random.normal(MEAN, SIGMA, raw_x.shape).astype(raw_x.dtype) / 255
 
         # Initialize storage for denoised channels
         denoised_channels = []
@@ -60,23 +63,21 @@ def test_color(loader, agent, fout):
         for channel_idx in range(c):
             # Process each channel independently
             raw_channel = raw_x[:, channel_idx:channel_idx+1, :, :]
-            raw_n = np.random.normal(MEAN, SIGMA, raw_channel.shape).astype(raw_channel.dtype) / 255
-            noisy_channel = raw_channel + raw_n
+            noisy_channel = raw_channel + raw_n[:, channel_idx:channel_idx+1, :, :]
+
             # Initialize state for the channel
             current_state = State.State((TEST_BATCH_SIZE, 1, h, w), MOVE_RANGE)
             current_state.reset(raw_channel, noisy_channel)
-            current_states.append(current_state)
-            raw_channels.append(raw_channel)
-            noisy_channels.append(noisy_channel[0, 0, :, :])
 
             # Iterative denoising process
             for t in range(EPISODE_LEN):
-                for i in range(c):
-                   action, inner_state = agent.act(current_states[i].tensor)
-                   current_states[i].step(action, inner_state)
-                   denoised_channel = np.maximum(0, current_states[i].image)
-                   denoised_channel = np.minimum(1, denoised_channel)
-                   denoised_channels.append(denoised_channel[0, 0, :, :]) # Remove the channel dimension
+                # Get action from the agent and update the state
+                action = agent.act(current_state.image)
+                current_state.step(action)
+
+            # Store denoised channel
+            denoised_channel = np.clip(current_state.image, 0, 1)
+            denoised_channels.append(denoised_channel[:, 0, :, :])  # Remove the channel dimension
 
         # Recombine channels into a single image
         denoised_image = np.stack(denoised_channels, axis=1)  # Shape: (batch_size, channels, height, width)
@@ -91,7 +92,7 @@ def test_color(loader, agent, fout):
         # Save images
         cv2.imwrite(f'{output_dir}{i}_output.png', denoised_image_uint8)
         cv2.imwrite(f'{output_dir}{i}_input.png', noisy_image_uint8)
-        print(cv2.PSNR(denoised_image_uint8, original_image_uint8))
+
         # Calculate PSNR and update metrics
         sum_psnr += cv2.PSNR(denoised_image_uint8, original_image_uint8)
 
@@ -124,13 +125,13 @@ def main(fout):
     optimizer = chainer.optimizers.Adam(alpha=LEARNING_RATE)
     optimizer.setup(model)
 
-    agent = PixelWiseA3C_InnerState_ConvR(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('/content/pixelRL/denoise_with_convGRU_and_RMC/model/pretrained_15.npz', agent.model)
+    agent = PixelWiseA3C(model, optimizer, EPISODE_LEN, GAMMA)
+    chainer.serializers.load_npz('/content/pixelRL/denoise/model/pretrained_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
 
     #_/_/_/ testing _/_/_/
-    test(mini_batch_loader, agent, fout)
+    test_color(mini_batch_loader, agent, fout)
     
      
  

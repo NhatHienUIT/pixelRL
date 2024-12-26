@@ -71,6 +71,7 @@ def test(loader, agent, fout):
         cv2.imwrite('/content/pixelRL/resultimage/denoise/grey/'+str(i)+'_input.png',N)
 
         sum_psnr += cv2.PSNR(p, I)
+        print(cv2.PSNR(p, I))
  
     print("test total reward {a}, PSNR {b}".format(a=sum_reward*255/test_data_size, b=sum_psnr/test_data_size))
     fout.write("test total reward {a}, PSNR {b}\n".format(a=sum_reward*255/test_data_size, b=sum_psnr/test_data_size))

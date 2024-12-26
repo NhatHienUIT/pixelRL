@@ -115,7 +115,7 @@ def main():
     optimizer.setup(model)
 
     agent = PixelWiseA3C(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('model/pretrained_15.npz', agent.model)
+    chainer.serializers.load_npz('/content/pixelRL/denoise/model/pretrained_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
     

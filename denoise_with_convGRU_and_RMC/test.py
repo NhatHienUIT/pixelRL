@@ -50,8 +50,8 @@ def test(loader, agent, fout):
             previous_image = current_state.image.copy()
             action, inner_state = agent.act(current_state.tensor)
             print(action)
-            print(len(action))
-            print(action.shape())
+            print(len(action[0]))
+            print(len(action[0][0]))
    
             current_state.step(action, inner_state)
             reward = np.square(raw_x - previous_image)*255 - np.square(raw_x - current_state.image)*255
@@ -102,7 +102,7 @@ def main(fout):
     optimizer.setup(model)
 
     agent = PixelWiseA3C_InnerState_ConvR(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('/content/pixelRL/denoise_with_convGRU_and_RMC/model/denoise_myfcn_9000/model.npz', agent.model)
+    chainer.serializers.load_npz('/content/pixelRL/denoise_with_convGRU_and_RMC/model/pretrain_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
 

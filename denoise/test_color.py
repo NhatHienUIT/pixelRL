@@ -104,25 +104,47 @@ def test_color(loader, agent, fout):
     fout.flush()
 
 
-def main():
+def main(fout):
+    #_/_/_/ load dataset _/_/_/ 
+    mini_batch_loader = MiniBatchLoader(
+        TRAINING_DATA_PATH, 
+        TESTING_DATA_PATH, 
+        IMAGE_DIR_PATH, 
+        CROP_SIZE)
+ 
     chainer.cuda.get_device_from_id(GPU_ID).use()
 
+    current_state = State.State((TRAIN_BATCH_SIZE,1,CROP_SIZE,CROP_SIZE), MOVE_RANGE)
+ 
     # load myfcn model
     model = MyFcn(N_ACTIONS)
-
+ 
     #_/_/_/ setup _/_/_/
     optimizer = chainer.optimizers.Adam(alpha=LEARNING_RATE)
     optimizer.setup(model)
 
-    agent = PixelWiseA3C(model, optimizer, EPISODE_LEN, GAMMA)
-    chainer.serializers.load_npz('/content/pixelRL/denoise/model/pretrained_15.npz', agent.model)
+    agent = PixelWiseA3C_InnerState_ConvR(model, optimizer, EPISODE_LEN, GAMMA)
+    chainer.serializers.load_npz('/content/pixelRL/denoise_with_convGRU_and_RMC/model/pretrained_15.npz', agent.model)
     agent.act_deterministically = True
     agent.model.to_gpu()
-    
-    denoise_image_color('img/input/1.png', agent)
 
+    #_/_/_/ testing _/_/_/
+    test(mini_batch_loader, agent, fout)
+    
+     
+ 
 if __name__ == '__main__':
     try:
-        main()
+        fout = open('testlog.txt', "w")
+        start = time.time()
+        main(fout)
+        end = time.time()
+        print("{s}[s]".format(s=end - start))
+        print("{s}[m]".format(s=(end - start)/60))
+        print("{s}[h]".format(s=(end - start)/60/60))
+        fout.write("{s}[s]\n".format(s=end - start))
+        fout.write("{s}[m]\n".format(s=(end - start)/60))
+        fout.write("{s}[h]\n".format(s=(end - start)/60/60))
+        fout.close()
     except Exception as error:
         print(error.message)

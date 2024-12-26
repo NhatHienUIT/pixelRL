@@ -1,4 +1,4 @@
-from mini_batch_loader import *
+from mini_batch_loader_color import *
 from chainer import serializers
 from MyFCN import *
 from chainer import cuda, optimizers, Variable

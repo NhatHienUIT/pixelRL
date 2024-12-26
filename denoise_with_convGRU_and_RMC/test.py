@@ -13,7 +13,7 @@ from google.colab.patches import cv2_imshow
 
 #_/_/_/ paths _/_/_/ 
 TRAINING_DATA_PATH          = "/content/pixelRL/training_BSD68.txt"
-TESTING_DATA_PATH           = "/content/pixelRL/testing.txt"
+TESTING_DATA_PATH           = "/content/pixelRL/demo.txt"
 IMAGE_DIR_PATH              = "/content/pixelRL/"
 SAVE_PATH            = "/content/pixelRL/denoise_with_convGRU_and_RMC/model/denoise_myfcn_"
  
@@ -49,9 +49,6 @@ def test(loader, agent, fout):
         for t in range(0, EPISODE_LEN):
             previous_image = current_state.image.copy()
             action, inner_state = agent.act(current_state.tensor)
-            print(action)
-            print(len(action[0]))
-            print(len(action[0][0]))
    
             current_state.step(action, inner_state)
             reward = np.square(raw_x - previous_image)*255 - np.square(raw_x - current_state.image)*255
@@ -76,6 +73,7 @@ def test(loader, agent, fout):
         cv2_imshow(N)
         cv2_imshow(p)
         sum_psnr += cv2.PSNR(p, I)
+        print(cv2.PSNR(p, I))
  
     print("test total reward {a}, PSNR {b}".format(a=sum_reward*255/test_data_size, b=sum_psnr/test_data_size))
     fout.write("test total reward {a}, PSNR {b}\n".format(a=sum_reward*255/test_data_size, b=sum_psnr/test_data_size))
